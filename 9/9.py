@@ -1,28 +1,10 @@
-import math
-import itertools
+def read(program, pos):
+    if pos not in program:
+        program[pos] = 0
+    return program[pos]
 
-def getValue(program, ip, argNumber, rb):
-    parameterType = getParameterType(read(program, ip), argNumber)
-
-    if parameterType == 0:
-        return read(program, read(program, ip + argNumber + 1))
-    elif parameterType == 1:
-        return read(program, ip + argNumber + 1)
-    elif parameterType == 2:
-        return read(program, rb + read(program, ip + argNumber + 1))
-    else:
-        raise Exception()
-
-def getAddress(program, ip, argNumber, rb):
-    parameterType = getParameterType(read(program, ip), argNumber)
-    if parameterType == 0:
-        return read(program, ip + argNumber + 1)
-    elif parameterType == 1:
-        Exception()
-    elif parameterType == 2:
-        return rb + read(program, ip + argNumber + 1)
-    else:
-        raise Exception()
+def store(value, program, pos):
+    program[pos] = value
 
 def getAction(action):
     return action % 100
@@ -30,15 +12,19 @@ def getAction(action):
 def getParameterType(action, parNo):
     return (action // (pow(10, parNo + 2))) % 10
 
-def read(program, pos):
-    if pos not in program:
-        program[pos] = 0
+def getValue(program, ip, argNumber, rb):
+    return read(program, getAddress(program, ip, argNumber, rb))
 
-    return program[pos]
-
-def store(value, program, pos):
-    program[pos] = value
-
+def getAddress(program, ip, argNumber, rb):
+    parameterType = getParameterType(read(program, ip), argNumber)
+    if parameterType == 0:
+        return read(program, ip + argNumber + 1)
+    elif parameterType == 1:
+        return ip + argNumber + 1
+    elif parameterType == 2:
+        return rb + read(program, ip + argNumber + 1)
+    else:
+        raise Exception()
 
 def evaluate(program, input, startIp, startRb):
     rb = startRb
@@ -47,8 +33,10 @@ def evaluate(program, input, startIp, startRb):
 
     while True:
         act = getAction(read(program, ip))
+
         def innerGetValue(argNo):
             return getValue(program, ip, argNo, rb)
+
         def innerGetAddress(argNo):
             return getAddress(program, ip, argNo, rb)
 
