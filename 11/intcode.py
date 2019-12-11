@@ -84,3 +84,11 @@ def evaluate(program, input, startIp, startRb):
             ip += 2
         else:
             raise Exception()
+
+def programFromFile(file):
+    with open(file) as f:
+        return programFromString(f.readline())
+
+def programFromString(string):
+    list = string.strip().split(",")
+    return dict([(x, int(list[x])) for x in range(0, len(list))])
