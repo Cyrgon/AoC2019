@@ -81,11 +81,17 @@ while not done:
             maxStepsFromOxygen = curStepsFromOxygen
             print("New oxygen max: " + str(maxStepsFromOxygen))
 
-    if output[0] == 2:
+    if not hasFoundOxygen and output[0] == 2:
         print("Steps to goal: " + str(curSteps))
         hasFoundOxygen = True
         minStepsFromOxygen[pos] = 0
         curStepsFromOxygen = 0
+
+        # Reset the board to uncharted to make the second search faster
+        for y in range(0, len(gameBoard) - 1):
+            for x in range(0, len(gameBoard) - 1):
+                if gameBoard[y][x] == empty:
+                    gameBoard[y][x] = uncharted
 
     if gameBoard[pos[1] - 1][pos[0]] == uncharted:
         dir = 1
